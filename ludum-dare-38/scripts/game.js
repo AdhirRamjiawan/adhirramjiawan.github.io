@@ -11,6 +11,9 @@ window.addEventListener("load",function() {
     Q.scene('level', function(stage) {
       var player;
       var world = new Q.World();
+      var electron = new Q.Electron();
+      var atom = new Q.Atom();
+      var isWorldVisible = true;
 
       player = Q("Player").first();
       
@@ -39,27 +42,41 @@ window.addEventListener("load",function() {
                 world.p.x += 100;
                 world.p.y += 100;
             }
-            
+
+             if (world.p.scale <= 1.65 && !isWorldVisible) {
+                stage.remove(atom);
+                stage.insert(world);
+                isWorldVisible = true;
+            }
+
         });
 
         Q.input.on('right',stage,function(e) { 
             console.log("input!");
-            world.p.scale += 0.1;
-            world.p.cx -= 100;
-            world.p.cy -= 100;
-            
-            world.p.x -= 100;
-            world.p.y -= 100;
+           
 
-            console.log(world.p);
+            if (world.p.scale > 1.65) {
+                stage.remove(world);
+                stage.insert(atom);
+                isWorldVisible = false;
+            } else {
+                world.p.scale += 0.1;
+                world.p.cx -= 100;
+                world.p.cy -= 100;
+                
+                world.p.x -= 100;
+                world.p.y -= 100;
+            }
+
         });
 
       stage.insert(world);
+      //stage.insert(atom);
     });
 
     Q.load([ "Ludum dare 38 loop 2.mp3" ], function() {
         console.log("loaded music");
-        Q.audio.play('Ludum dare 38 loop 2.mp3',{ loop: true });
+       // Q.audio.play('Ludum dare 38 loop 2.mp3',{ loop: true });
     });
 
     Q.Sprite.extend("World", {
@@ -77,11 +94,46 @@ window.addEventListener("load",function() {
             }
         });
 
-    Q.load("earth.png",function() {
-        Q.stageScene("level");
+    Q.Sprite.extend("Electron", {
+            init: function(p) {
+                this._super(p, {
+                    asset: "electron.png",
+                    scale: 1
+                });
 
+                console.log(this);
+            },
+            step: function() {
+            }
+        });
+
+     Q.Sprite.extend("Atom", {
+            init: function(p) {
+                this._super(p, {
+                    asset: "atom.png",
+                    x: 450,
+                    y: 300,
+                    scale: 1
+                });
+
+                console.log(this);
+            },
+            step: function() {
+            }
+        });
+
+    Q.load("earth.png",function() {
+        Q.load("electron.png",function() {
+            Q.load("atom.png",function() {
+                Q.stageScene("level");
+
+            });
+        });
     });
 
+    
+
+    
 
 });
         
