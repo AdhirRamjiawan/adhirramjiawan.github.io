@@ -11,7 +11,8 @@ window.addEventListener("load",function() {
     Q.scene('level', function(stage) {
       var player;
       var world = new Q.World();
-      var electron = new Q.Electron();
+      var electrons =[];
+      var electronBoundaryPoints = [];
       var atom = new Q.Atom();
       var isWorldVisible = true;
 
@@ -31,6 +32,30 @@ window.addEventListener("load",function() {
             y: 300
         }));
 
+        electrons.push(new Q.Electron());
+        electrons.push(new Q.Electron());
+        electrons.push(new Q.Electron());
+
+        // top left
+        electronBoundaryPoints.push({ x: 280, y:130 });
+        electronBoundaryPoints.push({ x: 330, y:180 });
+        electronBoundaryPoints.push({ x: 380, y:230 });
+
+        // bottom left
+        electronBoundaryPoints.push({ x: 280, y:470 });
+        electronBoundaryPoints.push({ x: 330, y:420 });
+        electronBoundaryPoints.push({ x: 380, y:370 });
+
+        // bottom right
+        electronBoundaryPoints.push({ x: 620, y:470 });
+        electronBoundaryPoints.push({ x: 570, y:420 });
+        electronBoundaryPoints.push({ x: 520, y:370 });
+
+        // top right
+        electronBoundaryPoints.push({ x: 620, y:130 });
+        electronBoundaryPoints.push({ x: 570, y:180 });
+        electronBoundaryPoints.push({ x: 520, y:230 });
+
         Q.input.on('left',stage,function(e) { 
             console.log("input!");
 
@@ -47,6 +72,10 @@ window.addEventListener("load",function() {
                 stage.remove(atom);
                 stage.insert(world);
                 isWorldVisible = true;
+
+                electrons.map(function(e){
+                    stage.remove(e);
+                });
             }
 
         });
@@ -59,6 +88,20 @@ window.addEventListener("load",function() {
                 stage.remove(world);
                 stage.insert(atom);
                 isWorldVisible = false;
+
+                electrons[0].p.x = 620;
+                electrons[0].p.y = 130;
+
+                electrons[1].p.x = 570;
+                electrons[1].p.y = 180;
+
+                electrons[2].p.x = 520;
+                electrons[2].p.y = 230;
+
+                electrons.map(function(e){
+                    stage.insert(e);
+                });
+                
             } else {
                 world.p.scale += 0.1;
                 world.p.cx -= 100;
