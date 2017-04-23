@@ -133,7 +133,7 @@ window.addEventListener("load",function() {
 
     Q.load([ "Ludum dare 38 loop 2.mp3" ], function() {
         console.log("loaded music");
-       // Q.audio.play('Ludum dare 38 loop 2.mp3',{ loop: true });
+        Q.audio.play('Ludum dare 38 loop 2.mp3',{ loop: true });
     });
 
     Q.Sprite.extend("World", {
