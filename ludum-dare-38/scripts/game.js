@@ -8,16 +8,51 @@ window.addEventListener("load",function() {
 
     Q.setImageSmoothing(false);
     
+    var electrons =[];
+    var electronBoundaryPoints = [];
+    var electronProperties = [];
+
+   
+
+
     Q.scene('level', function(stage) {
       var player;
       var world = new Q.World();
-      var electrons =[];
-      var electronBoundaryPoints = [];
+      
       var atom = new Q.Atom();
       var isWorldVisible = true;
 
       player = Q("Player").first();
       
+    electrons.push(new Q.Electron());
+    electrons.push(new Q.Electron());
+    electrons.push(new Q.Electron());
+
+    // top left
+    electronBoundaryPoints.push({ x: 280, y:130 });
+    electronBoundaryPoints.push({ x: 330, y:180 });
+    electronBoundaryPoints.push({ x: 380, y:230 });
+
+    // bottom left
+    electronBoundaryPoints.push({ x: 280, y:470 });
+    electronBoundaryPoints.push({ x: 330, y:420 });
+    electronBoundaryPoints.push({ x: 380, y:370 });
+
+    // bottom right
+    electronBoundaryPoints.push({ x: 620, y:470 });
+    electronBoundaryPoints.push({ x: 570, y:420 });
+    electronBoundaryPoints.push({ x: 520, y:370 });
+
+    // top right
+    electronBoundaryPoints.push({ x: 620, y:130 });
+    electronBoundaryPoints.push({ x: 570, y:180 });
+    electronBoundaryPoints.push({ x: 520, y:230 });
+
+    electronProperties.push({ xVel: -1, yVel: 0 });
+    electronProperties.push({ xVel: -1, yVel: 0 });
+    electronProperties.push({ xVel: -1, yVel: 0 });
+
+
         stage.insert(new Q.UI.Text({ 
             label: "A small world\n by \nAdhir Ramjiawan \n\n Ludum Dare 38",
             color: "white",
@@ -32,29 +67,7 @@ window.addEventListener("load",function() {
             y: 300
         }));
 
-        electrons.push(new Q.Electron());
-        electrons.push(new Q.Electron());
-        electrons.push(new Q.Electron());
-
-        // top left
-        electronBoundaryPoints.push({ x: 280, y:130 });
-        electronBoundaryPoints.push({ x: 330, y:180 });
-        electronBoundaryPoints.push({ x: 380, y:230 });
-
-        // bottom left
-        electronBoundaryPoints.push({ x: 280, y:470 });
-        electronBoundaryPoints.push({ x: 330, y:420 });
-        electronBoundaryPoints.push({ x: 380, y:370 });
-
-        // bottom right
-        electronBoundaryPoints.push({ x: 620, y:470 });
-        electronBoundaryPoints.push({ x: 570, y:420 });
-        electronBoundaryPoints.push({ x: 520, y:370 });
-
-        // top right
-        electronBoundaryPoints.push({ x: 620, y:130 });
-        electronBoundaryPoints.push({ x: 570, y:180 });
-        electronBoundaryPoints.push({ x: 520, y:230 });
+        
 
         Q.input.on('left',stage,function(e) { 
             console.log("input!");
@@ -115,6 +128,7 @@ window.addEventListener("load",function() {
 
       stage.insert(world);
       //stage.insert(atom);
+
     });
 
     Q.load([ "Ludum dare 38 loop 2.mp3" ], function() {
@@ -161,9 +175,40 @@ window.addEventListener("load",function() {
 
                 console.log(this);
             },
-            step: function() {
+            step: function(dt) {
+
+                for (var i = 0; i < 3; i++) {
+                    electrons[i].p.x += electronProperties[i].xVel * 4;
+                    electrons[i].p.y += electronProperties[i].yVel * 4;
+
+                    electronBoundaryPoints.map(function(bp){
+                        if (electrons[i].p.x === bp.x && electrons[i].p.y === bp.y) {
+                            var newDir = changeDirection(electronProperties[i].xVel, electronProperties[i].yVel);
+                            electronProperties[i].xVel = newDir.x;
+                            electronProperties[i].yVel = newDir.y;
+                        }
+                    });
+                }
             }
         });
+
+    function changeDirection(x,y) {
+        if (x === 0 && y === 1) {
+            return { x: 1 , y: 0};
+        }
+
+        if (x === 1 && y === 0) {
+            return { x: 0 , y: -1};
+        }
+
+        if (x === 0 && y === -1) {
+            return { x: -1 , y: 0};
+        }
+
+        if (x === -1 && y === 0) {
+            return { x: 0 , y: 1 };
+        }
+    }
 
     Q.load("earth.png",function() {
         Q.load("electron.png",function() {
