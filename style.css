@@ -1,0 +1,13 @@
+body {
+    background-color: #000000;
+    color: #0000ee;
+    font-size: 5vh;
+    font-family: monospace;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #ff00ff;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+}
